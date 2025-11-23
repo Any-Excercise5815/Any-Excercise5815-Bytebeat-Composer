@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PetcatPlayer Admin Panel</title>
+<style>
+body { font-family: sans-serif; text-align: center; padding: 20px; background: #f4f4f4; }
+fieldset { display: inline-block; padding: 20px; border-radius: 8px; background: #fff; }
+input { padding: 8px; margin: 5px; width: 200px; }
+button { padding: 8px 12px; margin: 5px; }
+#libraryEditor { display:none; margin-top:20px; text-align:left; max-width: 800px; }
+textarea { width: 100%; height: 400px; }
+</style>
+</head>
+<body>
+
+<div id="loginPanel">
+<fieldset>
+<legend>Admin Login</legend>
+<input type="password" id="adminPassword" placeholder="Enter password"><br>
+<button onclick="login()">Log In</button>
+</fieldset>
+</div>
+
+<div id="libraryEditor">
+<h2>Library Editor</h2>
+<textarea id="libraryJSON"></textarea><br>
+<button id="saveButton" onclick="saveLibrary()">Save Library</button>
+<button onclick="logout()">Logout</button>
+</div>
+
+<script>
+/* admin.js */
+
+// --- Şifre doğrulama ---
+const ADMIN_HASH = "c7852a01b0d462e672765add048986195593a22fc3b8e62ac5d64d223f0fde70";
+
+async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+function showLoginPanel() {
+    document.getElementById('loginPanel').style.display = 'block';
+    document.getElementById('libraryEditor').style.display = 'none';
+}
+
+async function login() {
+    const input = document.getElementById('adminPassword').value;
+    const inputHash = await sha256(input);
+    if(inputHash === ADMIN_HASH){
+        localStorage.setItem('petcat_admin_hash', ADMIN_HASH);
+        document.getElementById('loginPanel').style.display = 'none';
+        document.getElementById('libraryEditor').style.display = 'block';
+        await loadLibrary(); // Şifre doğruysa editor yüklenir
+    } else alert("Incorrect password!");
+}
+
+function logout() {
+    localStorage.removeItem('petcat_admin_hash');
+    showLoginPanel();
+}
+
+// --- GitHub API işlemleri ---
+const REPO_OWNER = "PetCat2025";
+const REPO_NAME = "petcat-cat-byte-composer";
+const FILE_PATH = "src/library.mjs";
+let fileSha = null;
+
+async function loadLibrary() {
+    // Editor açıldığında library yüklenir, ama token prompt çıkmaz
+    const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+    const resp = await fetch(url);
+    if(!resp.ok) return alert("Failed to fetch library: " + resp.statusText);
+    const data = await resp.json();
+    fileSha = data.sha;
+    const content = atob(data.content);
+    document.getElementById('libraryJSON').value = content;
+}
+
+async function saveLibrary() {
+    const token = prompt("Enter GitHub Personal Access Token (with repo write access)");
+    if(!token) return alert("Token required");
+
+    const content = btoa(document.getElementById('libraryJSON').value);
+    const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+    const body = {
+        message: "Update library via admin panel",
+        content: content,
+        sha: fileSha
+    };
+    const resp = await fetch(url, {
+        method: "PUT",
+        headers: {
+            "Authorization": "token " + token,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+    });
+    if(resp.ok){
+        alert("Library updated successfully!");
+        fileSha = (await resp.json()).content.sha;
+    } else alert("Failed to update library: " + resp.statusText);
+}
+
+// Sayfa yüklendiğinde kontrol
+window.addEventListener('DOMContentLoaded', () => {
+    if(localStorage.getItem('petcat_admin_hash') === ADMIN_HASH){
+        document.getElementById('loginPanel').style.display = 'none';
+        document.getElementById('libraryEditor').style.display = 'block';
+        loadLibrary();
+    } else {
+        showLoginPanel();
+    }
+});
+</script>
+
+</body>
+</html>
