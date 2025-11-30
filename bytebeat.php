@@ -293,12 +293,13 @@ function editSongForm() {
 								<option value="Bytebeat"' .
 									($song['mode'] === 'Bytebeat' ? ' selected' : '') . '>Bytebeat</option>
 								<option value="Signed Bytebeat"' .
-									($song['mode'] === 'Signed Bytebeat' ? ' selected' : '') .
-									'>Signed Bytebeat</option>
+									($song['mode'] === 'Signed Bytebeat' ? ' selected' : '') . '>Signed Bytebeat</option>
 								<option value="Floatbeat"' .
 									($song['mode'] === 'Floatbeat' ? ' selected' : '') . '>Floatbeat</option>
 								<option value="Funcbeat"' .
 									($song['mode'] === 'Funcbeat' ? ' selected' : '') . '>Funcbeat</option>
+								<option value="Tanbeat"' .
+									($song['mode'] === 'Tanbeat' ? ' selected' : '') . '>Tanbeat</option>
 							</select>
 							<input type="text" name="samplerate" value="' .
 								$song['samplerate'] . '" placeholder="Sample rate (Hz)">
@@ -345,6 +346,8 @@ function editSongForm() {
 									($drawing_mode === 'Diagram' ? ' selected' : '') . '>Diagram</option>
 								<option value="Combined"' .
 									($drawing_mode === 'Combined' ? ' selected' : '') . '>Combined</option>
+								<option value="Combined"' .
+									($drawing_mode === 'Spectrogram' ? ' selected' : '') . '>Spectrogram</option>
 							</select>
 							<input type="text" name="drawing_scale" placeholder="1=1/2, 2=1/4, 3=1/8, ..." value="' .
 								(isset($drawing_scale) ? $drawing_scale : '' ) . '">
