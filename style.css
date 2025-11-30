@@ -2,21 +2,21 @@
 
 :root {
 	--button-hover-color: #056de0;
-	--canvas-border: linear-gradient(#fda757, #fda757) 1;
-	--canvas-button: linear-gradient(to bottom, #cf0101, #0143ff);
+	--canvas-border: linear-gradient(#c421a4, #c421a4) 1;
+	--canvas-button: linear-gradient(to bottom, #bd914b, #a68b60);
 	--canvas-button-color: #01b83e;
-	--canvas-button-hover: linear-gradient(to bottom, #92aeec, #ff0101) !important;
+	--canvas-button-hover: linear-gradient(to bottom, #c177e6, #733194) !important;
 	--code-author: #0f48d4;
-	--code-button: linear-gradient(to bottom, #c50a0a, #171b22);
+	--code-button: linear-gradient(to bottom, #c4a88b, #af8bc4);
 	--code-button-border: #0170ff;
-	--code-button-hover: linear-gradient(to bottom, #3c508a, #1f2331);
-	--code-comment: #0151e0;
-	--code-definition: #3838ff;
+	--code-button-hover: linear-gradient(to bottom, #d41c93, #d48d1c);
+	--code-comment: #a67d41;
+	--code-definition: #92269e;
 	--code-font: bold;
 	--code-keyword: #000000;
-	--code-number: #ff0101;
-	--code-operator: #96cbfe;
-	--code-property: #ffd2a7;
+	--code-number: #381359;
+	--code-operator: #822787;
+	--code-property: #dd29e3;
 	--code-punctuation: #1ed55b;
 	--code-string: #a8ff60;
 	--code-string2: #56b6c2;
